@@ -1,0 +1,227 @@
+FORMAT: 1A
+HOST: http://www.nckuh.com
+
+# NCKUH Web Service
+採用 RESTful 架構規劃。所有字串編碼皆為UTF-8。
+
+FreeText: 要回傳所有和 FreeText 相容之資料，例如 /Patients?freeText='20140102' 要回傳：
+startDate == '20140102' or endDateDate == '20140102' or name == '20140102' or birthday == '20140102' or docId = '20140102' ... etc
+
+# Group Photo Relateds
+The photo related APIs
+
+## 4/27 - Patients [/Patients(?startDate, endDate, limit, offset, freeText, name, gender, birthday, docId, docName, phoId, phoName, uploadId, uploadName, recordId, clinical, patho, pathoNo, note, num)]
+### Retrive the list of patient ids according to the specified conditions. [GET]
+
++ Parameters
+    + startDate     (string) ... Specify the start date of the request resource with pattern YYYYMMDD (including this date)
+    + endDate       (string) ... Specify the end date of the request resouce with pattern YYYYMMDD (including this date)
+    + limit         (number) ... Specify the max number of resources in the return list
+    + offset        (number) ... Specify the offset for paging
+    + freeText      (string) ... Free Text content, NOTE: should check all parameters if the freetext content is matched
+    + name          (string) ... Patient Name
+    + gender        (string) ... Gender, could ony be 'F'/'M'
+    + birthday      (string) ... The birthday of the patients with pattern YYYYMMDD
+    + docId         (string) ... The Id of the doctor
+    + docName       (string) ... The name of the doctor
+    + phoId         (string) ... The Id of the photographer
+    + phoName       (string) ... The name of the photographer
+    + uploadId      (string) ... The Id of the uploader
+    + uploadName    (string) ... The Name of the uploader
+    + recordId      (string) ... The Id of the record (should return the id of the patient contains the record with the specified id)
+    + clinical      (string)
+    + patho         (string) 
+    + pathoNo       (string)
+    + note          (string)
+    + num           (string)
+
++ Response 200 (application/json)
+
+
+        {
+            "content": [
+                {
+                    "id": "K123004",        // [string] the patient id
+                    "gender": "M",          // [string] should only be "M"/"F"
+                    "name": "王大鳴",       // [string]
+                    "birthday": "19720101"  // [string] with pattern YYYYMMDD
+                    "latest": {
+                        "date": "20150401",         // [string] the date for the latest record with the pattern YYYYMMDD
+                        "docName": "陳醫師",        // [string] the corresponding doctor name for the latest record
+                        "phoName": "李醫師",        // [string] the corresponding doctor name for the photographer
+                        "uploadName": "胡醫師"      // [string] the corresponding doctor name for the uploader
+                    }
+                },
+                ...
+            ],
+            "limit": 15,                // [number]
+            "offset": 0,                // [number]
+            "total": 10,                // [number]
+            "startDate": "20120501",    // [string] with pattern: YYYYMMDD
+            "endDate": "20150501"       // [string] with pattern: YYYYMMDD
+        }
+
+
+## 4/27 - Records [/Records(?patientId)]
+### Retrive the list of records base on the specified patient ids. [GET]
+
++ Parameters
+    + patientId (string) ... The patient Id
+
++ Response 200 (application/json)
+
+
+        {
+            "content": [
+                {
+                    "id": "z32K123",            // [string] the record id
+                    "date": "20140310",         // [string] the date when the record had been created, with pattern: YYYYMMD
+                    "patientId": "K123004",     // [string] the id of the corresponding patient
+                    "docName": "陳醫師",        // [string] the name of the corresponding doctor
+                    "phoName": "李醫師",        // [string] the name of the corresponding photographer
+                    "uploadName": "胡醫師"      // [string] the name of the corresponding uploader
+                },
+                ...
+            ]
+        }
+        
+## 4/27 - Record [/Record/{recordId}]
+### Get the detail information of the specified record. [GET]
+
++ Parameters
+    + recordId (string) ... the record Id
+    
++ Response 200 (application/json)
+    
+        {
+            "content": {
+                "id": "z32K123",                // [string] the record id
+                "date": "20140310",             // [string] the date when the record had been created, with pattern: YYYYMMD
+                "patientId": "K123004",         // [string] the id of the corresponding patient
+                "patientName": "王大鳴",        // [string] the name of the corresponding patient
+                "docId": "d10z11",              // [string] the id of the corresponding doctor
+                "docName": "陳醫師",            // [string] the name of the corresponding doctor
+                "phoId": "d10z23",              // [string] the id of the corresponding photographer
+                "phoName": "李醫師",            // [string] the name of the corresponding photographer
+                "uploadId": "d10z31",           // [string] the id of the corresponding uploader
+                "uploadName": "胡醫師"          // [string] the name of the corresponding uploader
+                "clinical": "CLINICAL DATA",    // [string]
+                "patho": "PATHOLOGY DATA",      // [string]
+                "pathoNo": "142",               // [string]
+                "num": "32",                    // [string]
+                "note": "NOTE",                 // [string]
+                "photos": [
+                    "z32K123_001",              // [string] the id of the photo image
+                    "z32L123_002",
+                    ...
+                ]
+            }
+        }
+
+      
+## 4/27 - Photo [/Photo/{photoId}]
+### Retrive the photo image with the specified id. [GET]
+
++ Parameters
+    + photoId (string)
+    
++ Response 200 (image/png)
+
+# Group Conference Related
+The conference related APIs
+
+## 4/17 - Conference Types [/Conference/Types]
+### Get the list of types for the conference requests. [GET]
+
++ Response 200 (application/json)
+
+        {
+            "content": [
+                "皮膚科會議",
+                "皮膚科晨報",
+                ...
+            ]
+        }
+
+## 4/17 - Conferences [/Conferences/(?startDate, endDate, total, limit, offset, type)]
+### Get the list of the conferences base on the specified conditions. [GET]
+
++ Parameters
+    + startDate     (string) ... Specify the start date of the request resource with pattern YYYYMMDD (including this date)
+    + endDate       (string) ... Specify the end date of the request resouce with pattern YYYYMMDD (including this date)
+    + limit         (number) ... Specify the max number of resources in the return list
+    + offset        (number) ... Specify the offset for paging
+    + type          (string) ... Specify the type of the requesting conferences
+
++ Response 200 (application/json)
+
+
+        {
+            "content": [
+                {
+                    "id": "conf_001",           // [string] the conference id
+                    "type": "病理討論會",       // [string]
+                    "date": "20141203",         // [string] the date when the conference was/will be hold
+                    "cases": [
+                        {
+                            "patientId": "112301",      // [string] the corresponding patient id for the case
+                            "patientName": "吳明式",    // [string] the corresponding patient name for the case
+                            "gender": "M",              // [string] should only be "M"/"F"
+                            "birthday": "19640201",     // [string] the birthday of the patient with pattern YYYYMMDD
+                            "currentAge": "51歲",       // [string] the age of the patient
+                            "finished": False,          // [boolean] the flag that identified weather the case had been discussed
+                            "latest": {
+                                "date": "20150401",         // [string] the date for the latest record with the pattern YYYYMMDD
+                                "docName": "陳醫師",        // [string] the corresponding doctor name for the latest record
+                                "phoName": "李醫師",        // [string] the corresponding doctor name for the photographer
+                                "uploadName": "胡醫師"      // [string] the corresponding doctor name for the uploader
+                            }
+                        }, ...
+                    ]
+                },
+                ...
+            ],
+            "limit": 15,                // [number]
+            "offset": 0,                // [number]
+            "total": 10,                // [number]
+            "startDate": "20120501",    // [string] with pattern: YYYYMMDD
+            "endDate": "20150501"       // [string] with pattern: YYYYMMDD
+        }
+
+## 4/27 - Records [/Conference/{conferenceId}/Records(?patientId)]
+### Get the list of records with the specified conference id and the patient id. [GET]
+
++ Patameters
+    + conferenceId      (string) ... The id of the specified conference
+    + patientId         (string) ... The id of the specified patient
+    
++ Response 200 (application/json)
+    
+        {
+            "content": [
+                {
+                    "recordId": "z123k121",         // [string] the corresponding record id
+                    "date": "20150401", 
+                    "age": "51歲",
+                    "docName": "陳醫師",
+                    "phoName": "李醫師",
+                    "uploadName": "胡醫師",
+                    "presentorName": "朱醫師",      // [string] the corresponding doctor name for the presentor
+                    "clinical": "CLINICAL DATA",
+                    "patho": "PATHOLOGY DATA", 
+                    "pathoNo": "32",
+                    "photos": [
+                        "z123k121_001",
+                        "z123k121_002",
+                        ...
+                    ]
+                },
+                ...
+            ]
+        }
+
+
+
+
+
+
