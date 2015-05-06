@@ -7,6 +7,34 @@ HOST: http://www.nckuh.com
 FreeText: 要回傳所有和 FreeText 相容之資料，例如 /Patients?freeText='20140102' 要回傳：
 startDate == '20140102' or endDateDate == '20140102' or name == '20140102' or birthday == '20140102' or docId = '20140102' ... etc
 
+# Group Test Secion
+For testing the behaviors of api blueprint
+## Base Api [/base{?input}]
+
+### GET number [GET]
++ Parameters
+    + input (number) ... specify the input number
+    
++ Request A (application/json)
+        
+        { "input": 1 }
+
++ Response 200 (application/json)
+
+        {
+            "answer": 1 
+        }
+
++ Request B (application/json)
+
+        { "input": 2 }
+
++ Response 200 (application/json)
+
+        {
+            "answer": 2
+        }
+
 # Group Photo Relateds
 The photo related APIs
 
